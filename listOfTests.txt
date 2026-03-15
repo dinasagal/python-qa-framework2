@@ -1,0 +1,35 @@
+sanity
+
+test 1 - Login with standard user
+Open login page
+Login with valid credentials
+Verify redirect to inventory page
+Verify inventory list is visible
+
+test 2 - Inventory page loads after login
+Login
+Verify product cards are displayed
+Verify at least one known item name is visible
+
+test 3 -Add one product to cart
+Login
+Add one item
+Verify cart badge shows 1
+
+test 4- Remove product from cart from inventory
+Login
+Add one item
+Remove it
+Verify cart badge disappears or returns to empty
+
+test 5 - Open cart and verify selected item
+Login
+Add one item
+Open cart
+Verify correct item appears in cart
+
+test 6 - Logout flow
+Login
+Open burger menu
+Logout
+Verify return to login page
