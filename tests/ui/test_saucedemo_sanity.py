@@ -117,24 +117,3 @@ def test_user_can_logout(page):
         expect(page.locator(login_page.LOGIN_BUTTON)).to_be_visible()
 import allure
 
-@allure.tag("sanity", "ui")
-@allure.title("FAIL TEST: Cart badge should be 2 after adding one item (intentional failure)")
-def test_fail_cart_badge(page):
-    from pages.login_page import LoginPage
-    from pages.inventory_page import InventoryPage
-
-    login_page = LoginPage(page)
-    inventory_page = InventoryPage(page)
-
-    with allure.step("Open login page"):
-        login_page.open()
-
-    with allure.step("Log in as standard user"):
-        login_page.login_as_standard_user()
-
-    with allure.step("Add one item to cart"):
-        inventory_page.is_loaded()
-        inventory_page.add_backpack_to_cart()
-
-    with allure.step("Assert WRONG cart value (this will fail)"):
-        assert inventory_page.get_cart_badge_count() == 2, "Intentional failure: cart should NOT be 2"
