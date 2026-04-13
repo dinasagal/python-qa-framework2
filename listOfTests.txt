@@ -1,35 +1,109 @@
-sanity
+SANITY TESTS
 
-test 1 - Login with standard user
+test 1 - Standard user can log in successfully
 Open login page
-Login with valid credentials
-Verify redirect to inventory page
-Verify inventory list is visible
+Log in as standard user
+Verify inventory page is loaded
 
-test 2 - Inventory page loads after login
-Login
-Verify product cards are displayed
-Verify at least one known item name is visible
+test 2 - Inventory is displayed after login
+Open login page
+Log in as standard user
+Verify inventory is visible
 
-test 3 -Add one product to cart
-Login
-Add one item
-Verify cart badge shows 1
+test 3 - User can add item to cart
+Open login page
+Log in as standard user
+Add backpack to cart
+Verify cart badge shows one item
 
-test 4- Remove product from cart from inventory
-Login
-Add one item
-Remove it
-Verify cart badge disappears or returns to empty
-
-test 5 - Open cart and verify selected item
-Login
-Add one item
+test 4 - User can open cart and see selected item
+Open login page
+Log in as standard user
+Add backpack to cart
 Open cart
-Verify correct item appears in cart
+Verify selected item appears in cart
 
-test 6 - Logout flow
+test 5 - User can log out successfully
+Open login page
+Log in as standard user
+Log out from inventory page
+Verify user returns to login page
+
+test 6 - FAIL TEST: Cart badge should be 2 after adding one item (intentional failure)
+Open login page
+Log in as standard user
+Add one item to cart
+Assert WRONG cart value (this will fail)
+
+
+SMOKE TESTS
+
+test 1 - Smoke: Standard user can log in
+Open login page
 Login
-Open burger menu
+Verify inventory page loaded
+
+test 2 - Smoke: User can add item to cart
+Open login page
+Login as standard user
+Add item to cart
+Verify cart badge = 1
+
+test 3 - Smoke: Cart badge updates correctly
+Open login page
+Login as standard user
+Add backpack to cart
+Remove backpack from cart
+Verify cart badge returns to 0
+
+test 4 - Smoke: User can logout
+Open login page
+Login as standard user
 Logout
-Verify return to login page
+Verify back on login page
+
+
+REGRESSION TESTS
+
+test 1 - Regression: Login fails with invalid credentials
+Open login page
+Login with invalid credentials
+Verify error message is displayed
+
+test 2 - Regression: Locked user cannot login
+Open login page
+Login with locked user
+Verify locked out error
+
+test 3 - Regression: User can remove item from cart
+Open login page
+Login as standard user
+Add backpack to cart
+Remove backpack from cart
+Verify cart is empty
+
+test 4 - Regression: Multiple items can be added to cart
+Open login page
+Login as standard user
+Add multiple items
+Verify cart badge = 2
+
+test 5 - Regression: Cart persists after navigation
+Open login page
+Login as standard user
+Add backpack to cart
+Open cart
+Navigate back
+Verify cart still has item
+
+test 6 - Regression: Sort products low to high
+Open login page
+Login as standard user
+Select sort low to high
+Verify prices sorted ascending
+
+test 7 - Regression: Sort products high to low
+Open login page
+Login as standard user
+Select sort high to low
+Verify prices sorted descending
