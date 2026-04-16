@@ -1,15 +1,15 @@
-name: Sanity Tests + Allure Report
+name: Daily Regression Tests + Allure Report
 
 on:
-  push:
-    branches: [ main ]
+  schedule:
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  ui-tests:
+  regression-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,9 +46,9 @@ jobs:
           QA_LOCKED_PASSWORD=${QA_LOCKED_PASSWORD:-secret_sauce}
           EOF
 
-      # 5. Run sanity tests (headless automatically via CI=true)
-      - name: Run UI tests
-        run: python -m pytest -m "sanity"
+      # 5. Run regression tests (headless automatically via CI=true)
+      - name: Run Regression Tests
+        run: python -m pytest -m "regression"
 
       # 6. Install Allure CLI
       - name: Install Allure
@@ -67,9 +67,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-report
+          name: allure-report-regression-daily
           path: allure-report
-      
+
       # 9. Deploy Allure Report to GitHub Pages
       - name: Deploy to GitHub Pages
         if: always()
