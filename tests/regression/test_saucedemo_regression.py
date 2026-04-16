@@ -1,7 +1,9 @@
 import pytest
 import allure
 
-from config import settings
+from flows import add_backpack_and_open_cart
+from flows import login_locked_user
+from flows import login_standard_user_to_inventory
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.cart_page import CartPage
@@ -41,10 +43,8 @@ def test_login_invalid_user(page):
 def test_locked_user_login(page):
     login_page = LoginPage(page)
 
-    login_page.open()
-
     with allure.step("Login with locked user"):
-        login_page.login_as_locked_user()
+        login_locked_user(login_page)
 
     with allure.step("Verify locked out error"):
         assert "locked out" in login_page.get_error_message().lower()
@@ -59,8 +59,7 @@ def test_remove_item_from_cart(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     inventory_page.add_backpack_to_cart()
     inventory_page.remove_backpack_from_cart()
@@ -78,8 +77,7 @@ def test_add_multiple_items(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Add multiple items"):
         inventory_page.add_item_to_cart("sauce-labs-backpack")
@@ -99,11 +97,8 @@ def test_cart_persistence(page):
     inventory_page = InventoryPage(page)
     cart_page = CartPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
-
-    inventory_page.add_backpack_to_cart()
-    inventory_page.open_cart()
+    login_standard_user_to_inventory(login_page, inventory_page)
+    add_backpack_and_open_cart(inventory_page)
     cart_page.is_loaded()
 
     page.go_back()
@@ -121,8 +116,7 @@ def test_sort_low_to_high(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Select sort low to high"):
         inventory_page.select_sort("lohi")
@@ -142,8 +136,7 @@ def test_sort_high_to_low(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Select sort high to low"):
         inventory_page.select_sort("hilo")

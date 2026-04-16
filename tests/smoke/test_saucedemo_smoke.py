@@ -3,6 +3,7 @@ import allure
 from playwright.sync_api import expect
 
 from config import settings
+from flows import login_standard_user_to_inventory
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.cart_page import CartPage
@@ -26,15 +27,11 @@ def test_smoke_login(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    with allure.step("Open login page"):
-        login_page.open()
-
-    with allure.step("Login"):
-        login_page.login_as_standard_user()
+    with allure.step("Open login page and login"):
+        login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Verify inventory page loaded"):
         expect(page).to_have_url(settings.inventory_url)
-        inventory_page.is_loaded()
 
 
 @allure.title("Smoke: User can add item to cart")
@@ -47,8 +44,7 @@ def test_smoke_add_to_cart(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Add item to cart"):
         inventory_page.add_backpack_to_cart()
@@ -66,8 +62,7 @@ def test_smoke_cart_badge(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     inventory_page.add_backpack_to_cart()
     inventory_page.remove_backpack_from_cart()
@@ -85,8 +80,7 @@ def test_smoke_logout(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    login_page.open()
-    login_page.login_as_standard_user()
+    login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Logout"):
         inventory_page.logout()

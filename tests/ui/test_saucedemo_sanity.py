@@ -3,6 +3,8 @@ import allure
 from playwright.sync_api import expect
 
 from config import settings
+from flows import add_backpack_and_open_cart
+from flows import login_standard_user_to_inventory
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from pages.cart_page import CartPage
@@ -26,15 +28,11 @@ def test_standard_user_can_login(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    with allure.step("Open login page"):
-        login_page.open()
-
-    with allure.step("Log in as standard user"):
-        login_page.login_as_standard_user()
+    with allure.step("Open login page and log in as standard user"):
+        login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Verify inventory page is loaded"):
         expect(page).to_have_url(settings.inventory_url)
-        inventory_page.is_loaded()
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.tag("sanity", "ui")
@@ -47,14 +45,10 @@ def test_inventory_is_displayed_after_login(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    with allure.step("Open login page"):
-        login_page.open()
-
-    with allure.step("Log in as standard user"):
-        login_page.login_as_standard_user()
+    with allure.step("Open login page and log in as standard user"):
+        login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Verify inventory is visible"):
-        inventory_page.is_loaded()
         assert inventory_page.get_inventory_count() > 0, "Inventory should contain products."
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -68,14 +62,10 @@ def test_user_can_add_item_to_cart(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    with allure.step("Open login page"):
-        login_page.open()
-
-    with allure.step("Log in as standard user"):
-        login_page.login_as_standard_user()
+    with allure.step("Open login page and log in as standard user"):
+        login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Add backpack to cart"):
-        inventory_page.is_loaded()
         inventory_page.add_backpack_to_cart()
 
     with allure.step("Verify cart badge shows one item"):
@@ -93,18 +83,11 @@ def test_user_can_open_cart_and_see_item(page):
     inventory_page = InventoryPage(page)
     cart_page = CartPage(page)
 
-    with allure.step("Open login page"):
-        login_page.open()
+    with allure.step("Open login page and log in as standard user"):
+        login_standard_user_to_inventory(login_page, inventory_page)
 
-    with allure.step("Log in as standard user"):
-        login_page.login_as_standard_user()
-
-    with allure.step("Add backpack to cart"):
-        inventory_page.is_loaded()
-        inventory_page.add_backpack_to_cart()
-
-    with allure.step("Open cart"):
-        inventory_page.open_cart()
+    with allure.step("Add backpack to cart and open cart"):
+        add_backpack_and_open_cart(inventory_page)
 
     with allure.step("Verify selected item appears in cart"):
         cart_page.is_loaded()
@@ -123,14 +106,10 @@ def test_user_can_logout(page):
     login_page = LoginPage(page)
     inventory_page = InventoryPage(page)
 
-    with allure.step("Open login page"):
-        login_page.open()
-
-    with allure.step("Log in as standard user"):
-        login_page.login_as_standard_user()
+    with allure.step("Open login page and log in as standard user"):
+        login_standard_user_to_inventory(login_page, inventory_page)
 
     with allure.step("Log out from inventory page"):
-        inventory_page.is_loaded()
         inventory_page.logout()
 
     with allure.step("Verify user returns to login page"):
