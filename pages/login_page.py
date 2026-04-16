@@ -1,8 +1,10 @@
 from playwright.sync_api import Page, expect
 
+from config import settings
+
 
 class LoginPage:
-    URL = "https://www.saucedemo.com/"
+    URL = settings.base_url
 
     USERNAME_INPUT = '[data-test="username"]'
     PASSWORD_INPUT = '[data-test="password"]'
@@ -24,7 +26,10 @@ class LoginPage:
         self.page.click(self.LOGIN_BUTTON)
 
     def login_as_standard_user(self):
-        self.login("standard_user", "secret_sauce")
+        self.login(settings.standard_user.username, settings.standard_user.password)
+
+    def login_as_locked_user(self):
+        self.login(settings.locked_user.username, settings.locked_user.password)
 
     def get_error_message(self) -> str:
         return self.page.locator(self.ERROR_MESSAGE).inner_text().strip()

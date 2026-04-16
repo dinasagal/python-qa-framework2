@@ -1,11 +1,12 @@
+from config import settings
 from pages.login_page import LoginPage
 
 
 def test_successful_login(page):
-    login = LoginPage(page)
+    login_page = LoginPage(page)
 
-    login.open("https://www.saucedemo.com/")
+    login_page.open()
 
-    login.login("standard_user", "secret_sauce")
+    login_page.login_as_standard_user()
 
-    assert "inventory" in page.url
+    assert page.url == settings.inventory_url

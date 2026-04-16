@@ -4,6 +4,9 @@ from playwright.sync_api import Page, expect
 class InventoryPage:
     INVENTORY_CONTAINER = '[data-test="inventory-container"]'
     INVENTORY_ITEMS = '[data-test="inventory-item"]'
+    INVENTORY_ITEM_NAMES = '[data-test="inventory-item-name"]'
+    INVENTORY_ITEM_PRICES = '[data-test="inventory-item-price"]'
+    SORT_DROPDOWN = '[data-test="product-sort-container"]'
     CART_LINK = '[data-test="shopping-cart-link"]'
     CART_BADGE = '[data-test="shopping-cart-badge"]'
     MENU_BUTTON = "#react-burger-menu-btn"
@@ -26,8 +29,21 @@ class InventoryPage:
     def add_backpack_to_cart(self):
         self.page.click(self.BACKPACK_ADD_BUTTON)
 
+    def add_item_to_cart(self, item_slug: str):
+        self.page.click(f'[data-test="add-to-cart-{item_slug}"]')
+
     def remove_backpack_from_cart(self):
         self.page.click(self.BACKPACK_REMOVE_BUTTON)
+
+    def select_sort(self, value: str):
+        self.page.select_option(self.SORT_DROPDOWN, value)
+
+    def get_item_names(self) -> list[str]:
+        return [name.strip() for name in self.page.locator(self.INVENTORY_ITEM_NAMES).all_inner_texts()]
+
+    def get_item_prices(self) -> list[float]:
+        prices = self.page.locator(self.INVENTORY_ITEM_PRICES).all_inner_texts()
+        return [float(price.replace("$", "")) for price in prices]
 
     def get_cart_badge_count(self) -> int:
         badge = self.page.locator(self.CART_BADGE)
