@@ -64,11 +64,54 @@ Generated files must be created only in:
 
 1. Receive feature text.
 2. Find exact `FEATURE:` block in `listOfTests.txt`.
-3. Parse test items and keep only `Support: supported`.
-4. Map each supported item to existing methods/flows.
-5. Generate a ready-to-run `test_*.py` file under `generated_tests/`.
+3. Parse test items — separate `supported` from `blocked`.
+4. **Run the Unblock Phase** for any `blocked` items (see below).
+5. Map each supported item (including newly unblocked ones) to existing methods/flows.
+6. Generate a ready-to-run `test_*.py` file under `generated_tests/`.
 
-If all items are blocked, do not generate a test file; report blocked reasons.
+If all items remain blocked after the Unblock Phase, do not generate a test file; report the remaining blocked reasons.
+
+---
+
+## Unblock Phase
+
+Run this phase whenever one or more plan items have `Support: blocked`.
+
+### Step 1 — Diagnose the block
+
+Read the `Support:` field note. Common reasons:
+- `missing POM` — required locator/method does not exist in any `pages/` file
+- `missing flow` — multi-step journey not covered in `flows/`
+- `missing fixture` — no `conftest.py` fixture for the required setup
+
+Only proceed with unblocking `missing POM` and `missing flow` blocks.  
+For `missing fixture` or any other reason, keep the item blocked and report it.
+
+### Step 2 — Identify the target page object
+
+Read the relevant file under `pages/` to understand existing selectors, naming conventions, and method patterns before writing anything new.
+
+### Step 3 — Add the minimum required code
+
+**For a missing POM method:**
+- Add only the locators/methods needed for this test — nothing speculative
+- Follow the exact naming and style of existing methods in that page object
+- Place new locators with the existing selector block at the top of the class
+- Place new methods after the last existing method
+
+**For a missing flow:**
+- Add the new flow function to `flows/saucedemo_flows.py`
+- Follow existing flow function style (page objects as parameters, `allure.step` not required but match if present)
+
+### Step 4 — Update the plan entry
+
+After extending the POM or flow, update the affected test entry in `listOfTests.txt`:
+- Change `Support: blocked (<reason>)` → `Support: supported`
+- Add or update the `Reuse:` field to reference the new method/flow
+
+### Step 5 — Continue with generation
+
+Resume the main workflow at step 5 — the newly unblocked item is now treated as supported.
 
 ---
 

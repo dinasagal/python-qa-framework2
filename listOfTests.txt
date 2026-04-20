@@ -107,3 +107,88 @@ Open login page
 Login as standard user
 Select sort high to low
 Verify prices sorted descending
+
+
+FEATURE: Navigation & UI
+DESCRIPTION: A logged-in standard user should be able to navigate between application pages (inventory, cart, login) using page controls and the browser back button, and the UI should reflect the correct state after each navigation action.
+PLAN_TYPE: REGRESSION
+
+test 1 - User navigates to cart page from inventory
+Type: positive
+Support: supported
+Reuse: login_standard_user_to_inventory, LoginPage.open, LoginPage.login_as_standard_user, InventoryPage.is_loaded, InventoryPage.open_cart, CartPage.is_loaded
+Open login page
+Log in as standard user
+Verify inventory page is loaded
+Click the cart link
+Verify cart page is loaded
+Expected: Cart page container is visible.
+
+test 2 - User navigates back to inventory from cart
+Type: positive
+Support: supported
+Reuse: login_standard_user_to_inventory, add_backpack_and_open_cart, InventoryPage.open_cart, CartPage.is_loaded, page.go_back, InventoryPage.is_loaded
+Open login page
+Log in as standard user
+Add backpack to cart
+Open cart
+Navigate back using browser back button
+Verify inventory page is loaded
+Expected: Inventory container and items are visible after going back.
+
+test 3 - User returns to login page after logout
+Type: positive
+Support: supported
+Reuse: login_standard_user_to_inventory, InventoryPage.logout, LoginPage.LOGIN_BUTTON, settings.base_url
+Open login page
+Log in as standard user
+Open side menu and log out
+Verify URL is the base login URL
+Verify login button is visible
+Expected: User is on the login page with the login button visible.
+
+test 4 - Cart page is accessible with no items
+Type: edge
+Support: supported
+Reuse: login_standard_user_to_inventory, InventoryPage.open_cart, CartPage.is_loaded, CartPage.get_cart_count
+Open login page
+Log in as standard user
+Open cart without adding any items
+Verify cart page loads
+Verify cart item count is 0
+Expected: Cart page loads and shows zero items.
+
+test 5 - Cart badge is absent when cart is empty
+Type: edge
+Support: supported
+Reuse: login_standard_user_to_inventory, InventoryPage.get_cart_badge_count
+Open login page
+Log in as standard user
+Verify no item has been added
+Read cart badge count
+Expected: Cart badge count returns 0 (badge not visible).
+
+test 6 - Side menu opens and closes
+Type: positive
+Support: supported
+Reuse: login_standard_user_to_inventory, InventoryPage.open_menu, InventoryPage.is_menu_open, InventoryPage.close_menu, InventoryPage.is_menu_closed
+Open login page
+Log in as standard user
+Open side menu
+Verify menu is open
+Close side menu
+Verify menu is no longer visible
+Expected: Menu wrapper aria-hidden is false when open, true when closed.
+
+test 7 - Clicking a product opens its detail page
+Type: positive
+Support: supported
+Reuse: login_standard_user_to_inventory, InventoryPage.click_product_by_name, ProductDetailPage.is_loaded, ProductDetailPage.get_product_name
+Open login page
+Log in as standard user
+Click on a product name
+Verify product detail page loads
+Verify product name on detail page matches the clicked item
+Expected: Product detail container is visible with matching product name.
+
+END FEATURE

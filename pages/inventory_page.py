@@ -10,7 +10,10 @@ class InventoryPage:
     CART_LINK = '[data-test="shopping-cart-link"]'
     CART_BADGE = '[data-test="shopping-cart-badge"]'
     MENU_BUTTON = "#react-burger-menu-btn"
+    MENU_CLOSE_BUTTON = "#react-burger-cross-btn"
+    MENU_WRAPPER = ".bm-menu-wrap"
     LOGOUT_LINK = '[data-test="logout-sidebar-link"]'
+    INVENTORY_ITEM_LINK = '[data-test="inventory-item-name"]'
 
     BACKPACK_ADD_BUTTON = '[data-test="add-to-cart-sauce-labs-backpack"]'
     BACKPACK_REMOVE_BUTTON = '[data-test="remove-sauce-labs-backpack"]'
@@ -56,6 +59,18 @@ class InventoryPage:
 
     def open_menu(self):
         self.page.click(self.MENU_BUTTON)
+
+    def close_menu(self):
+        self.page.click(self.MENU_CLOSE_BUTTON)
+
+    def is_menu_open(self):
+        expect(self.page.locator(self.MENU_WRAPPER)).to_have_attribute("aria-hidden", "false")
+
+    def is_menu_closed(self):
+        expect(self.page.locator(self.MENU_WRAPPER)).to_have_attribute("aria-hidden", "true")
+
+    def click_product_by_name(self, product_name: str):
+        self.page.locator(self.INVENTORY_ITEM_LINK).filter(has_text=product_name).click()
 
     def logout(self):
         self.open_menu()
